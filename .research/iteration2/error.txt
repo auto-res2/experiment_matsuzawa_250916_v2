@@ -1,0 +1,4 @@
+[2025-09-16 11:12:23,252] INFO:src.preprocess: Loading openai/gsm8k split=train streaming=True
+[2025-09-16 11:12:24,303] INFO:src.preprocess: Loading openai/gsm8k split=test streaming=True
+[2025-09-16 11:12:24,789] INFO:src.train: Loading sentence-transformers/all-MiniLM-L6-v2 …
+encoding-test: 0it [00:00, ?it/s]encoding-test: 1it [00:00,  5.95it/s]encoding-test: 9it [00:00, 38.91it/s]encoding-test: 16it [00:00, 50.29it/s]encoding-test: 24it [00:00, 60.00it/s]encoding-test: 32it [00:00, 64.06it/s]encoding-test: 40it [00:00, 67.54it/s]encoding-test: 48it [00:00, 69.61it/s]encoding-test: 56it [00:00, 70.41it/s]encoding-test: 64it [00:01, 69.54it/s]encoding-test: 72it [00:01, 68.28it/s]encoding-test: 79it [00:01, 65.97it/s]encoding-test: 83it [00:01, 62.57it/s]
