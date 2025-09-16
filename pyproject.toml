@@ -1,1 +1,28 @@
-# Please list the required python packages.
+[project]
+name = "himap-refactor"
+version = "0.1.0"
+description = "Refactored HiMAP surrogate experiment into a structured package"
+authors = ["Research Engineer <researcher@example.com>"]
+readme = "README.md"
+requires-python = ">=3.9"
+
+[project.scripts]
+himap = "src.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.optional-dependencies]
+# CUDA 12.1 runtime is pre-installed on the platform.  We require torch>=2.1
+# because it brings CUDA 12 wheels by default.
+
+# Core run-time.
+dependencies = [
+  "torch>=2.1.0",
+  "transformers>=4.37.0",
+  "datasets>=2.16.1",
+  "bitsandbytes>=0.42.0",
+  "pyyaml>=6.0.1",
+  "tqdm>=4.66.1",
+  "numpy>=1.21.0",
+]

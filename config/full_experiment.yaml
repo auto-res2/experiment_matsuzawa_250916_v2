@@ -1,0 +1,13 @@
+# Full-scale configuration.  Still memory-efficient by using streaming mode.
+
+seed: 42
+streaming: true  # stream from disk/HF hub – keeps RAM below 500 MB
+
+model:
+  name: sentence-transformers/all-MiniLM-L6-v2
+  lr: 1.0e-5
+  epochs: 3
+  batch_size: 16
+  unfreeze_last_n: 2
+
+dataset: openai/gsm8k
