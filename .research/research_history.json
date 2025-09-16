@@ -6,5 +6,82 @@
     "efficient graph attention",
     "gat optimization",
     "graph attention gpu"
+  ],
+  "research_study_list": [
+    {
+      "title": "Bandit Samplers for Training Graph Neural Networks"
+    },
+    {
+      "title": "SAC: Accelerating and Structuring Self-Attention via Sparse Adaptive Connection"
+    },
+    {
+      "title": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision"
+    },
+    {
+      "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness"
+    },
+    {
+      "title": "KDEformer: Accelerating Transformers via Kernel Density Estimation"
+    },
+    {
+      "title": "Transformer Quality in Linear Time"
+    },
+    {
+      "title": "Transformer Quality in Linear Time"
+    },
+    {
+      "title": "Dynamic Rescaling for Training GNNs"
+    },
+    {
+      "title": "Are GATs Out of Balance?"
+    },
+    {
+      "title": "Accelerating Transformer Pre-training with 2:4 Sparsity"
+    },
+    {
+      "title": "SAC: Accelerating and Structuring Self-Attention via Sparse Adaptive Connection"
+    },
+    {
+      "title": "Adaptive Structural Fingerprints for Graph Attention Networks"
+    },
+    {
+      "title": "Transformers meet Stochastic Block Models: Attention with Data-Adaptive Sparsity and Cost"
+    },
+    {
+      "title": "A Flexible, Equivariant Framework for Subgraph GNNs via Graph Products and Graph Coarsening"
+    },
+    {
+      "title": "Efficient Attention via Control Variates"
+    },
+    {
+      "title": "Are GATs Out of Balance?"
+    },
+    {
+      "title": "GATE: How to Keep Out Intrusive Neighbors"
+    },
+    {
+      "title": "Learnable Graph Convolutional Attention Networks"
+    },
+    {
+      "title": "Dynamic Rescaling for Training GNNs"
+    },
+    {
+      "title": "Improving the Gating Mechanism of Recurrent Neural Networks"
+    },
+    {
+      "title": "FlashAttention-3: Fast and Accurate Attention with Asynchrony and Low-precision"
+    },
+    {
+      "title": "FlashAttention-2: Faster Attention with Better Parallelism and Work Partitioning"
+    },
+    {
+      "title": "FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness"
+    },
+    {
+      "title": "Recipe for a General, Powerful, Scalable Graph Transformer"
+    },
+    {
+      "title": "Adaptive Structural Fingerprints for Graph Attention Networks"
+    }
   ]
 }
