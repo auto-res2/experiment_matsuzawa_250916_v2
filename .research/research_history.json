@@ -658,6 +658,68 @@
       }
     }
   ],
+  "reference_research_study_list": [
+    {
+      "title": "On exact computation with an infinitely wide neural net"
+    },
+    {
+      "title": "InstructZero: Efficient instruction optimization for black-box large language models"
+    },
+    {
+      "title": "RLPrompt: Optimizing discrete text prompts with reinforcement learning"
+    },
+    {
+      "title": "Black-box prompt learning for pre-trained language models"
+    },
+    {
+      "title": "Benchmarking optimization software with performance profiles"
+    },
+    {
+      "title": "Online convex optimization in the bandit setting: Gradient descent without a gradient"
+    },
+    {
+      "title": "Connecting large language models with evolutionary algorithms yields powerful prompt optimizers"
+    },
+    {
+      "title": "Instruction induction: From few examples to natural language task descriptions"
+    },
+    {
+      "title": "Neural Tangent Kernel: Convergence and generalization in neural networks"
+    },
+    {
+      "title": "Large language models are zero-shot reasoners"
+    },
+    {
+      "title": "Universal approximation theorems for differentiable geometric deep learning"
+    },
+    {
+      "title": "Wide neural networks of any depth evolve as linear models under gradient descent"
+    },
+    {
+      "title": "Prefix-tuning: Optimizing continuous prompts for generation"
+    },
+    {
+      "title": "Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers"
+    },
+    {
+      "title": "Pre-train, prompt, and predict: A systematic survey of prompting methods in natural language processing"
+    },
+    {
+      "title": "Reframing instructional prompts to gptk’s language"
+    },
+    {
+      "title": "High-dimensional bayesian optimization using low-dimensional feature spaces"
+    },
+    {
+      "title": "Random gradient-free minimization of convex functions"
+    },
+    {
+      "title": "GPT-4 technical report"
+    },
+    {
+      "title": "ChatGPT"
+    }
+  ],
   "new_method": {
     "method": "Open Problems: • Existing surrogate-based prompt search (e.g., the proposed SAPS) still wastes many queries because the surrogate has no information before the scorer LLM finishes a *whole* example set.  \n• Surrogates are re-trained from scratch for every new task, ignoring the strong regularities of what makes a good prompt across tasks and models.  \n• Current optimisation criteria are 1-D (accuracy). Real deployments also care about latency, cost and fairness-bias, but multi-objective prompt search is unexplored.  \n• Even with a surrogate, the inner loop is sequential; wall-clock latency is dominated by waiting for full-length GPT responses.  Can we use *partial* low-fidelity signals (first-k tokens, log-probs) to filter bad prompts earlier?\nMethods: Hierarchical Multi-Fidelity Active Prompt Optimisation (HiMAP)  \n1. Three fidelity levels per candidate prompt p:  \n    L0 cheap heuristics (prompt length, lexical diversity, regex match on “Let’s think step-by-step”).  \n  L1 partial evaluation: we ask the scorer LLM to generate only the *first beam* (or first 30 tokens) for 4 optimisation examples and return token-log-probs—≈10× cheaper than a full call.  \n  L2 full evaluation on the complete optimisation set (as in SAPS).  \n2. Multi-task meta-surrogate fθ(p, task-embed, level) that is *pre-trained* offline on 40 public optimisation traces (GSM8K, BBH, MMLU, ARC, etc.) released by OPRO authors.  The task embedding is the mean SBERT of example questions.  Fine-tune on-line with new (p, level, score) triples.  \n3. Bayesian acquisition: at every outer step we draw N=48 prompts from the optimiser-LLM.  For each prompt we predict μ,σ for the *Pareto front* objectives (accuracy, cost, bias@gender).  We greedily pick 24 candidates for cheap L0/L1 probes; only the k=6 most promising/uncertain graduate to L2.  \n4. Early stopping of bad prompts: if fθ’s upper-confidence bound on accuracy after L1 is below the current best-10th-percentile, drop the prompt.  \n5. Bias estimation: during optimisation we track per-gender accuracy gaps on a tiny calibration set (8 counter-factually swapped examples) and include it as a third dimension in the surrogate.  \n6. Open-sourcing a “PromptTrace-Zoo” dataset + training script so others can reuse the meta-surrogate.\nExperimental Setup: Benchmarks: GSM8K, 5-subset MMLU, BBH-Hard, and newly added WinoGender fairness set.  \nScorer LLM: GPT-3.5-turbo-1106, temperature 0.  \nOptimiser LLM: GPT-3.5-turbo, temp 1.2, 48 candidates/step.  \nBudgets: 250, 500, 1 000 full-fidelity query equivalents (we bill L0=0, L1=0.1, L2=1).  \nBaselines: Vanilla OPRO, EvoPrompt, SAPS (original), Random-search.  \nMetrics: (a) Pareto-frontier hyper-volume (Accuracy↑, Cost↓, BiasGap↓).  (b) Best accuracy @fixed cost.  (c) Carbon estimate via openai api energy model.  \nAblations: no meta-pretraining; no partial eval; replace UCB with greedy top-k; surrogate sizes (MiniLM vs DistilBERT-base).  \nRepeats: 5 seeds.\nExperimental Code: Key new parts (excerpt):  \n```python\nclass MetaSurrogate(nn.Module):\n    def __init__(self, hdim=256):\n        super().__init__()\n        self.enc = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L6-v2')\n        self.level_embed = nn.Embedding(3, 32)  # L0,L1,L2\n        self.fc = nn.Sequential(nn.Linear(384+32+128,hdim),nn.ReLU(),\n                                nn.Linear(hdim, 6))  # mean&logvar for 3 objectives\n    def forward(self, prompt_txt, task_vec, level):\n        with torch.no_grad():\n            p_vec = self.enc(prompt_txt, return_dict=True).pooler_output\n        x = torch.cat([p_vec, task_vec, self.level_embed(level)],-1)\n        out = self.fc(x)\n        mu, logvar = out[:,:3], out[:,3:]\n        return mu, torch.exp(0.5*logvar)\n```\nPartial scorer wrapper:\n```python\ndef scorer_partial(prompt, ex):\n    msg = make_prompt(prompt, ex)\n    return openai.ChatCompletion.create(model='gpt-3.5-turbo',\n        max_tokens=30, temperature=0, logprobs=True, n=1,\n        messages=[{\"role\":\"user\",\"content\":msg}])\n```\nAcquisition loop chooses fidelity per prompt based on predicted Pareto UCB and remaining budget. Full runnable notebook <link> accompanies paper.\nExpected Result: • HiMAP reaches 59 ± 0.4 % GSM8K accuracy with only 500 full-cost queries (≈8× cheaper than OPRO and 2× cheaper than SAPS) while keeping gender bias gap < 1.5 %.  \n• Pareto hyper-volume improves by 35 % over SAPS at all budgets.  \n• Meta-pretraining halves the cold-start cost: after 40 real evaluations surrogate MAE drops below 2.0.  \n• Carbon footprint estimate reduced by 70 %.\nExpected Conclusion: Hierarchical multi-fidelity active sampling plus cross-task meta-learning yields a new state-of-the-art in *cost-aware, fair* automatic prompt engineering.  The approach generalises beyond reasoning benchmarks, is orthogonal to the choice of optimiser, and demonstrates how small, open models can learn reusable heuristics for guiding black-box LLM experimentation—democratising access and lowering environmental impact.  Future work: extend to RLHF reward tuning and integrate open-weight scorer models for fully local optimisation.",
     "experimental_design": {
