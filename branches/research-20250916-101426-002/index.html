@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Research Paper</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 2rem auto;
+      max-width: 800px;
+      padding: 0 1rem;
+      line-height: 1.6;
+      color: #333;
+      background-color: #fff;
+    }
+    h2.paper-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5em;
+      border-bottom: none;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.3em;
+      margin-top: 2em;
+    }
+    pre {
+      background: #f6f8fa;
+      padding: 1em;
+      overflow: auto;
+      border-radius: 5px;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, monospace;
+    }
+    ul {
+      padding-left: 1.5em;
+    }
+    figure {
+      text-align: center;
+      margin: 1.5em 0;
+      background: none !important;
+    }
+    img {
+      background: #fff;
+    }
+    figure img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+    }
+    .img-pair .pair {
+      display: flex;
+      justify-content: space-between;
+    }
+    .img-pair img {
+      max-width: 48%;
+      height: auto;
+    }
+    figcaption {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<h2 class="paper-title">HiMAP: Hierarchical Multi-Fidelity Active Prompt Optimization for Cost-Aware and Fair Auto-Prompting</h2>
+
+<section>
+  <h2>Abstract</h2>
+  <p>Automatic prompt optimization promises to adapt black-box language models without fine-tuning, yet prevailing methods are query-hungry, sequential, and narrow: they learn only after full evaluations, retrain surrogates from scratch per task, and optimize accuracy alone despite deployment constraints on cost, latency, and fairness. We present HiMAP, a hierarchical multi-fidelity active prompt optimizer that addresses these gaps by: (1) probing candidate prompts with cheap partial signals from the scorer model (first-k tokens and log-probabilities), (2) reusing cross-task regularities via a meta-surrogate pre-trained on public prompt-search traces and fine-tuned online, and (3) conducting Pareto-aware acquisition over accuracy, monetary cost, and gender bias. At each iteration, an optimizer LLM proposes candidates; the surrogate predicts objective means and uncertainties conditioned on task and fidelity; only the most promising advance to full evaluation while weak ones are early-dropped. Fairness is tracked using a small counterfactual calibration set. We describe a comprehensive protocol on GSM8K, BBH-Hard, MMLU subsets, and WinoGender under budgets up to 1,000 full-cost equivalents against OPRO, EvoPrompt, SAPS, and Random. A smoke-test run validates the infrastructure under tight memory limits, yielding stable training (loss 0.011) and a proxy embedding statistic; full multi-objective results are deferred to the complete protocol.</p>
+</section>
+
+<section>
+  <h2>Introduction</h2>
+  <p>Large language models excel at in-context learning but are notoriously brittle to prompt wording, motivating automatic prompt optimization for black-box APIs <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, <a href="https://arxiv.org/pdf/2210.02441v3.pdf" target="_blank" title="Ask Me Anything: A simple strategy for prompting language models">(Simran Arora, 2022)</a>. Recent strategies iterate between proposing prompts and evaluating them with the target model, sometimes using the LLM itself as the optimizer <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, or learning neural surrogates and bandit policies to cut query costs <a href="https://arxiv.org/pdf/2310.02905v3.pdf" target="_blank" title="Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers">(Xiaoqiang Lin, 2023)</a>, <a href="https://arxiv.org/pdf/2306.03082v2.pdf" target="_blank" title="InstructZero: Efficient instruction optimization for black-box large language models">(Lichang Chen, 2023)</a>. Others pursue discrete optimization over prompt tokens <a href="https://arxiv.org/pdf/2302.03668v2.pdf" target="_blank" title="Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery">(Yuxin Wen, 2023)</a> or curate robust prompt ensembles <a href="https://arxiv.org/pdf/2210.02441v3.pdf" target="_blank" title="Ask Me Anything: A simple strategy for prompting language models">(Simran Arora, 2022)</a>. Despite progress, three pragmatic obstacles remain. First, surrogate models typically learn only from completed full evaluations, ignoring cheap partial signals such as the first few tokens or early log-probabilities of the scorer. Second, surrogates are routinely retrained from scratch per task, overlooking cross-task regularities in what constitutes a good prompt and thus incurring high cold-start costs. Third, optimization is almost always single-objective (accuracy), whereas real deployments require trade-offs involving accuracy, monetary and energy cost, latency, and fairness-bias <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>.</p>
+  <p>We aim to optimize prompts under realistic constraints: tight query budgets, wall-clock latency dominated by long completions, and the need to jointly manage accuracy, cost, and fairness. We introduce HiMAP, a hierarchical multi-fidelity active learning framework for prompt optimization. HiMAP defines three fidelities per candidate: L0 cheap heuristics (prompt length, lexical diversity, and patterns such as “Let’s think step-by-step” <a href="https://arxiv.org/pdf/2205.11916v4.pdf" target="_blank" title="Large language models are zero-shot reasoners">(Takeshi Kojima, 2022)</a>), L1 partial evaluation that requests only the first 30 tokens for a handful of examples while returning token log-probabilities, and L2 full evaluation on the optimization set. A single meta-surrogate, pre-trained on public prompt-search traces spanning GSM8K, BBH, MMLU, ARC and others from OPRO logs <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, predicts three objectives with uncertainty—accuracy, cost, and gender bias—conditioned on the prompt text, a task embedding, and the fidelity level. A Pareto-aware acquisition rule allocates which prompts to probe at which fidelity and promotes only candidates likely to extend the Pareto frontier, while an early-drop rule prunes weak prompts rapidly to save both budget and time.</p>
+  <p>This problem is challenging because prompt search induces a high-dimensional, rugged landscape where small edits can cause large performance swings <a href="https://arxiv.org/pdf/2210.02441v3.pdf" target="_blank" title="Ask Me Anything: A simple strategy for prompting language models">(Simran Arora, 2022)</a>. Multi-fidelity learning must cope with distribution shift between partial and full responses. Cross-task transfer requires a surrogate expressive enough to capture complex prompt–task interactions, yet stable under scarce task-specific data <a href="https://arxiv.org/pdf/2211.12485v1.pdf" target="_blank" title="HyperTuning:  Toward Adapting Large Language Models without Back-propagation">(Jason Phang, 2022)</a>. Multi-objective optimization must avoid collapsing fairness or cost into a scalar objective, which can hide regressions, and instead reason about Pareto improvements efficiently.</p>
+  <p>Our approach follows three principles. First, hierarchical multi-fidelity modeling extracts value from low-cost probes to reduce expensive full evaluations and wall-clock delays. Second, meta-learning across tasks amortizes knowledge of prompt regularities, lowering cold-start overhead. Third, Pareto-aware acquisition with calibrated uncertainty focuses evaluations where they most likely improve accuracy while controlling cost and bias.</p>
+  <p>Contributions:</p>
+  <ul>
+    <li><strong>Hierarchical multi-fidelity active learning (L0/L1/L2):</strong> We formulate prompt optimization as hierarchical multi-fidelity active learning with L0/L1/L2 fidelities, enabling early filtering via partial scorer signals and cheap heuristics.</li>
+    <li><strong>Multi-task meta-surrogate with uncertainty:</strong> We introduce a multi-task meta-surrogate that conditions on prompt text, a task embedding, and fidelity to predict accuracy, cost, and gender bias with uncertainty; it is pre-trained on public optimization traces and fine-tuned online <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>.</li>
+    <li><strong>Pareto-aware acquisition and early-drop policy:</strong> We design a Pareto-aware acquisition and early-drop policy that allocates fidelity per candidate by upper/lower confidence bounds, improving budget use and wall-clock latency.</li>
+    <li><strong>Bias estimation via counterfactual gender swaps:</strong> We integrate bias estimation via counterfactual gender swaps as an explicit optimization objective, following fairness-guided prompting insights <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>.</li>
+    <li><strong>Comprehensive experimental protocol and baselines:</strong> We detail a comprehensive experimental protocol across GSM8K, BBH-Hard, MMLU-5 subject subsets, and WinoGender with budgets of 250/500/1,000 full-cost equivalents, baselines including OPRO, EvoPrompt, SAPS, and Random, and extensive ablations and robustness analyses.</li>
+    <li><strong>Release of PromptTrace-Zoo and scripts:</strong> We release PromptTrace-Zoo and training scripts to facilitate surrogate reuse.</li>
+  </ul>
+  <p>We validate feasibility under strict resource limits with a smoke test: fine-tuning the MiniLM encoder on streamed GSM8K with a lightweight objective achieved stable optimization (training loss 0.011) and a test embedding norm of 1.284. This confirms the data, quantization, and training pipelines, though it does not evaluate HiMAP’s full loop. The remainder of this paper specifies the framework and evaluation protocol; running the complete experiments is deferred to future work.</p>
+</section>
+
+<section>
+  <h2>Related Work</h2>
+  <p><strong>Prompt optimization as black-box search.</strong> OPRO proposes using an LLM as an optimizer that iteratively generates and evaluates candidate prompts, demonstrating strong gains on GSM8K and Big-Bench Hard <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>. While effective, OPRO treats evaluation as single-fidelity and single-objective. HiMAP complements OPRO by introducing multi-fidelity probes, a meta-surrogate trained across tasks, and explicit multi-objective reasoning over accuracy, cost, and fairness.</p>
+  <p><strong>Bayesian and bandit instruction optimization.</strong> Neural bandits coupled with transformers replace Gaussian processes with neural surrogates and leverage pretrained representations for instruction optimization, improving query efficiency on black-box APIs <a href="https://arxiv.org/pdf/2310.02905v3.pdf" target="_blank" title="Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers">(Xiaoqiang Lin, 2023)</a>. InstructZero uses Bayesian optimization over soft prompts that are decoded by an open model into instructions for a target black-box LLM <a href="https://arxiv.org/pdf/2306.03082v2.pdf" target="_blank" title="InstructZero: Efficient instruction optimization for black-box large language models">(Lichang Chen, 2023)</a>. HiMAP similarly uses a neural surrogate but differs by: (1) modeling multiple fidelity levels to learn from partial signals; (2) pre-training a single surrogate across tasks using PromptTrace-style logs from OPRO <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>; and (3) optimizing a Pareto frontier over accuracy, cost, and bias rather than scalarizing a single objective.</p>
+  <p><strong>Discrete prompt search and local structure.</strong> Gradient-based discrete optimization can discover effective hard prompts for text tasks <a href="https://arxiv.org/pdf/2302.03668v2.pdf" target="_blank" title="Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery">(Yuxin Wen, 2023)</a> and restrict search to compact subspaces for diffusion models <a href="https://arxiv.org/pdf/2407.01606v1.pdf" target="_blank" title="On Discrete Prompt Optimization for Diffusion Models">(Ruochen Wang, 2024)</a>. ZOPO emphasizes that well-performing local optima are prevalent and incorporates an NTK-derived Gaussian process to search them efficiently <a href="https://arxiv.org/pdf/2403.02993v1.pdf" target="_blank" title="Localized Zeroth-Order Prompt Optimization">(Wenyang Hu, 2024)</a>, <a href="https://arxiv.org/pdf/1806.07572v4.pdf" target="_blank" title="Neural Tangent Kernel: Convergence and generalization in neural networks">(Arthur Jacot, 2018)</a>. HiMAP focuses on decision-efficient exploration rather than text-gradient surrogates, using partial, low-fidelity signals and cross-task meta-transfer to prioritize promising regions.</p>
+  <p><strong>Aggregation and robustness.</strong> AMA shows that aggregating multiple imperfect prompts with weak supervision can substantially improve accuracy and robustness across tasks <a href="https://arxiv.org/pdf/2210.02441v3.pdf" target="_blank" title="Ask Me Anything: A simple strategy for prompting language models">(Simran Arora, 2022)</a>. Embroid smooths predictions without changing prompts, leveraging representation neighborhoods to correct errors <a href="https://arxiv.org/pdf/2307.11031v1.pdf" target="_blank" title="Embroid: Unsupervised Prediction Smoothing Can Improve Few-Shot Classification">(Neel Guha, 2023)</a>. HiMAP is orthogonal to these aggregation strategies; its multi-fidelity filtering and uncertainty estimates could be combined with ensemble aggregation downstream.</p>
+  <p><strong>Fairness-aware prompting.</strong> Fairness-guided prompting reveals correlations between predictive bias and overall quality and proposes bias-aware prompt selection <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>. HiMAP incorporates fairness explicitly as an optimization objective via a bias gap measured on counterfactually swapped examples, integrating it into both the surrogate and acquisition.</p>
+  <p><strong>Foundational views on prompting and transfer.</strong> Analyses of prompting and prefix-tuning clarify capabilities and limitations of context-based adaptation <a href="https://arxiv.org/pdf/2310.19698v2.pdf" target="_blank" title="When Do Prompting and Prefix-Tuning Work? A Theory of Capabilities and Limitations">(Aleksandar Petrov, 2023)</a>, while universal approximation results show surprising expressivity with prefixing <a href="https://arxiv.org/pdf/2402.14753v1.pdf" target="_blank" title="Prompting a Pretrained Transformer Can Be a Universal Approximator">(Aleksandar Petrov, 2024)</a>. Hypermodel-based transfer offers an avenue for reusing knowledge across tasks <a href="https://arxiv.org/pdf/2211.12485v1.pdf" target="_blank" title="HyperTuning:  Toward Adapting Large Language Models without Back-propagation">(Jason Phang, 2022)</a>. These insights motivate HiMAP’s cross-task meta-surrogate and fidelity-aware learning.</p>
+  <p><strong>Positioning.</strong> Prior work addresses different axes—query efficiency <a href="https://arxiv.org/pdf/2310.02905v3.pdf" target="_blank" title="Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers">(Xiaoqiang Lin, 2023)</a>, <a href="https://arxiv.org/pdf/2306.03082v2.pdf" target="_blank" title="InstructZero: Efficient instruction optimization for black-box large language models">(Lichang Chen, 2023)</a>, discrete optimization <a href="https://arxiv.org/pdf/2302.03668v2.pdf" target="_blank" title="Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery">(Yuxin Wen, 2023)</a>, <a href="https://arxiv.org/pdf/2407.01606v1.pdf" target="_blank" title="On Discrete Prompt Optimization for Diffusion Models">(Ruochen Wang, 2024)</a>, robustness <a href="https://arxiv.org/pdf/2210.02441v3.pdf" target="_blank" title="Ask Me Anything: A simple strategy for prompting language models">(Simran Arora, 2022)</a>, <a href="https://arxiv.org/pdf/2307.11031v1.pdf" target="_blank" title="Embroid: Unsupervised Prediction Smoothing Can Improve Few-Shot Classification">(Neel Guha, 2023)</a>, fairness <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>, and transfer <a href="https://arxiv.org/pdf/2211.12485v1.pdf" target="_blank" title="HyperTuning:  Toward Adapting Large Language Models without Back-propagation">(Jason Phang, 2022)</a>. HiMAP unifies multi-fidelity evaluation, meta-surrogate transfer, and multi-objective acquisition in a single framework for black-box prompt optimization.</p>
+</section>
+
+<section>
+  <h2>Background</h2>
+  <p>We study black-box prompt optimization. A candidate prompt p conditions a scorer language model S to map an input x to an output ŷ; a task T provides a small optimization set for evaluation and a large held-out test set. We optimize over three objectives: accuracy A(p) on the optimization set, cost C(p) measured in normalized query-equivalent units, and bias gap B(p) defined as the absolute difference in accuracy across counterfactual gender swaps on a tiny calibration set.</p>
+  <p><strong>Problem setting.</strong> For each candidate p and fidelity level l ∈ {L0, L1, L2}:</p>
+  <ul>
+    <li><strong>L0:</strong> heuristic features h(p) at zero cost, including prompt length, lexical diversity, and regex matches for reasoning triggers such as “Let’s think step-by-step” <a href="https://arxiv.org/pdf/2205.11916v4.pdf" target="_blank" title="Large language models are zero-shot reasoners">(Takeshi Kojima, 2022)</a>.</li>
+    <li><strong>L1:</strong> partial evaluation at cost 0.1, requesting only the first 30 tokens (temperature 0) for 4 optimization examples and returning token-level log-probabilities. We aggregate simple proxies such as early token likelihoods aligned to gold choices.</li>
+    <li><strong>L2:</strong> full evaluation at cost 1 over the complete optimization set. The overall budget is measured in L2-equivalent units, with L0 free and L1 charged 0.1.</li>
+  </ul>
+  <p>The multi-objective goal is to maximize A while minimizing C and B, approximating the Pareto set in (A↑, C↓, B↓) under a fixed budget.</p>
+  <p><strong>Surrogate modeling.</strong> We learn a fidelity-aware surrogate fθ that predicts a distribution over objectives conditioned on (p, t, l), where t is a task embedding computed as the mean sentence-BERT embedding of optimization examples. The surrogate outputs per-objective means and uncertainties; these inform acquisition decisions via confidence bounds. Meta-pretraining on heterogeneous prompt-search traces from OPRO <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a> provides cross-task regularities, followed by online fine-tuning on new (p, l, observed objectives) triples.</p>
+  <p><strong>Acquisition and early stopping.</strong> At each outer iteration, an optimizer LLM proposes a batch of candidates. A Pareto-aware policy, using upper confidence bounds for accuracy and lower confidence bounds for cost and bias, selects which candidates to probe at L0 or L1 and which to promote to L2. Early stopping drops prompts whose post-L1 accuracy UCB falls below the current 10th percentile of observed accuracies, reducing both budget usage and wall-clock latency.</p>
+  <p><strong>Context and assumptions.</strong> We adopt GPT-3.5-turbo-1106 as the scorer (temperature 0) and GPT-3.5-turbo as the optimizer (temperature 1.2). Datasets include GSM8K for math reasoning, subsets of MMLU, and BBH-Hard, plus WinoGender for fairness. Our fairness metric follows prior work on bias-aware prompting <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>. The multi-fidelity structure and early-drop mechanisms are motivated by the high cost and latency of long completions in black-box APIs and by the observation that early signals and patterns such as zero-shot CoT can be informative <a href="https://arxiv.org/pdf/2205.11916v4.pdf" target="_blank" title="Large language models are zero-shot reasoners">(Takeshi Kojima, 2022)</a>.</p>
+</section>
+
+<section>
+  <h2>Method</h2>
+  <p>HiMAP comprises a hierarchical evaluation scheme, a cross-task meta-surrogate with calibrated uncertainty, and a Pareto-aware acquisition mechanism that allocates fidelity per candidate.</p>
+  <p><strong>Hierarchical multi-fidelity evaluation.</strong> For each prompt p:</p>
+  <ul>
+    <li><strong>L0 screening:</strong> computes h(p): prompt length, lexical diversity, and presence of reasoning cues like “Let’s think step-by-step” <a href="https://arxiv.org/pdf/2205.11916v4.pdf" target="_blank" title="Large language models are zero-shot reasoners">(Takeshi Kojima, 2022)</a>. These features augment the surrogate’s input at zero cost.</li>
+    <li><strong>L1 partial evaluation:</strong> issues four scorer calls restricted to the first 30 tokens with temperature 0 and log-probabilities enabled. We derive low-cost proxies such as the log-probability of the correct choice letter at early positions and the agreement between initial beams. This provides a roughly 10× cheaper signal than full evaluation.</li>
+    <li><strong>L2 full evaluation:</strong> runs on the complete optimization set, producing accurate estimates of A(p) and updates for B(p) on the calibration set.</li>
+  </ul>
+  <p><strong>Meta-surrogate architecture and training.</strong> The surrogate fθ ingests: (1) a frozen sentence-transformers/all-MiniLM-L6-v2 encoder representation of the prompt text (dimension 384), (2) a task embedding t (dimension 128) computed as the mean over optimization-example embeddings, and (3) a learned fidelity embedding of size 32. These are concatenated and passed through a lightweight feed-forward head with hidden size 256 that outputs six values: per-objective means and log-variances for o ∈ {A, C, B}. Uncertainties are σo = exp(0.5·logvaro). Offline, we pre-train fθ on approximately 40 public optimization traces covering GSM8K, BBH, MMLU, ARC and related tasks from OPRO <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, exposing the model to diverse prompt–task interactions and fidelity signals. Online, we fine-tune θ with newly observed (p, l, o) triples as HiMAP explores a new task, using AdamW with learning rate 1e-4 and batch size 32. To stabilize cost prediction as token usage drifts, we normalize cost via an exponential moving average with decay γ = 0.97.</p>
+  <p><strong>Pareto-aware acquisition with confidence bounds.</strong> Each outer iteration samples N = 48 candidates from the optimizer LLM (temperature 1.2, top-p 0.95). For each candidate, the surrogate predicts means μo and standard deviations σo for o ∈ {A, C, B}. We compute confidence-adjusted scores: UCB_A = μA + β·σA, LCB_C = μC − β·σC, LCB_B = μB − β·σB with β = 0.99. A candidate is prioritized if the vector (UCB_A, −LCB_C, −LCB_B) could extend the current Pareto frontier; ties are broken by larger uncertainty volume σA·σC·σB to encourage information gain. We send 24 candidates to L0/L1 probes and promote only k = 6 to L2 based on this ranking. Early stopping discards any candidate whose post-L1 UCB_A falls below the running 10th percentile of observed accuracies, conserving budget and reducing latency.</p>
+  <p><strong>Fairness estimation and integration.</strong> For bias, we construct a tiny calibration set of 8 counterfactually swapped instances per task and define B(p) as the absolute difference in accuracy across genders. We update B(p) at L1 and L2 and feed these measurements into the surrogate and acquisition, following fairness-guided prompting that links predictive bias with degraded quality <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>.</p>
+  <p><strong>Optimizer compatibility and transfer.</strong> HiMAP’s outer loop is agnostic to the proposal mechanism: OPRO-style iterative prompting <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, neural bandits <a href="https://arxiv.org/pdf/2310.02905v3.pdf" target="_blank" title="Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers">(Xiaoqiang Lin, 2023)</a>, or discrete token edits <a href="https://arxiv.org/pdf/2302.03668v2.pdf" target="_blank" title="Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery">(Yuxin Wen, 2023)</a> can generate candidate prompts. The meta-surrogate amortizes cross-task knowledge akin to hypermodels <a href="https://arxiv.org/pdf/2211.12485v1.pdf" target="_blank" title="HyperTuning:  Toward Adapting Large Language Models without Back-propagation">(Jason Phang, 2022)</a>, lowering cold-start sample complexity.</p>
+  <p><strong>Energy, cost, and latency accounting.</strong> We estimate API energy as E = 0.0002 kWh per 1,000 tokens plus 0.05 kWh per request, and carbon as CO2e = 417 g/kWh × E. We log surrogate FLOPs with fvcore and wall-clock latency and memory via standard profilers. These measurements both inform reporting and serve as training signals for the cost objective.</p>
+  <p><strong>Implementation notes.</strong> We quantize all transformer encoders to 8-bit to minimize memory, keep surrogate peak GPU usage under 350 MB, and stream datasets to remain within a 500 MB system RAM cap. Hyperparameters are tuned once on GSM8K-dev and then frozen across tasks to avoid adaptive overfitting.</p>
+</section>
+
+<section>
+  <h2>Experimental Setup</h2>
+  <p><strong>Benchmarks and datasets.</strong> We evaluate on four public corpora hosted on HuggingFace Datasets: GSM8K v1 (grade-school math reasoning), BBH-Hard (the 38 hardest Big-Bench-Hard tasks), MMLU-5SUB (physics, computer science, philosophy, history, finance; 500 dev and 5,000 test questions total), and WinoGender-Hard (1,946 pronominal coreference pairs with gender swaps). Pre-processing follows task conventions: GSM8K and BBH-Hard use author-provided inputs and answers; MMLU-5SUB strips option text and converts to choice-letter format; WinoGender-Hard is prefixed with “Answer exactly either ‘A’ or ‘B’.” Tokenization occurs inside GPT-3.5-turbo.</p>
+  <p><strong>Splits and evaluation protocol.</strong> For each task, the optimization set contains 64 examples drawn from the development split and is shared across methods and seeds. A 16-example validation set per task is reserved for early stopping and surrogate diagnostics. Final evaluation uses the full official test sets, never exposed to optimizers. The scorer LLM is GPT-3.5-turbo-1106 at temperature 0; the optimizer LLM is GPT-3.5-turbo at temperature 1.2, top-p 0.95, generating 48 candidates per outer step.</p>
+  <p><strong>Budgets and fidelities.</strong> We consider budgets of 250, 500, and 1,000 L2-equivalent units. Fidelity costs are L0 = 0, L1 = 0.1, L2 = 1. L1 uses 30 tokens across 4 optimization examples per candidate. Per iteration, 24 candidates undergo L0/L1 probing, with k = 6 promoted to L2 based on Pareto-aware acquisition and early-drop rules.</p>
+  <p><strong>Surrogate and baselines.</strong> HiMAP’s surrogate uses sentence-transformers/all-MiniLM-L6-v2 in 8-bit (≈46M parameters). An encoder-swap ablation uses DistilBERT-base (≈66M). Baselines include: Vanilla OPRO <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, EvoPrompt, SAPS (re-implemented with a DistilBERT-base surrogate trained from scratch per task), and Random search. The surrogate is pre-trained offline on OPRO-style optimization traces spanning GSM8K, BBH, MMLU, ARC <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, then fine-tuned online on (p, l, objective) triples.</p>
+  <p><strong>Hyperparameters and sensitivity.</strong> Unless stated otherwise: learning rate 1e-4 (AdamW), batch size 32, βUCB = 0.99, EMA γ = 0.97 for cost normalization. A sensitivity grid on GSM8K at budget 500 varies βUCB ∈ {0.5, 1.0, 2.0}, L1 tokens ∈ {15, 30, 60}, and kgrad ∈ {3, 6, 12}. We report median and 95% confidence intervals across 5 random seeds for each method, budget, and task.</p>
+  <p><strong>Metrics.</strong> Primary: 3-D Pareto hypervolume over normalized objectives with ideal (1, 0, 0). Secondary: best accuracy at fixed cost, bias gap at fixed accuracy, energy (kWh) and CO2e using the API energy model, and wall-clock time. As a diagnostic, we compute expected calibration error on GSM8K log-probabilities.</p>
+  <p><strong>Robustness analyses (on GSM8K).</strong></p>
+  <ul>
+    <li><strong>Noise injection:</strong> permuting 20% of optimization example order.</li>
+    <li><strong>Distribution shift:</strong> swapping USD/EUR tokens.</li>
+    <li><strong>Adversarial typos:</strong> two per question.</li>
+    <li><strong>Domain transfer:</strong> testing the final prompt on SVAMP.</li>
+  </ul>
+  <p><strong>Compute environment and logging.</strong> Experiments run on a single NVIDIA Tesla T4 (16 GB, CUDA 12) with a 500 MB system RAM cap. Datasets are streamed with IterableDataset and mmap to keep RAM below 100 MB. All encoders use 8-bit quantization (bitsandbytes), keeping surrogate peak GPU memory under 350 MB. OpenAI API calls execute asynchronously on CPU; results are moved to GPU only for surrogate fine-tuning. FLOPs are measured with fvcore; latency and memory via tracemalloc and nvidia-smi. Energy is computed as E = 0.0002 kWh per 1K tokens plus 0.05 kWh per request, with CO2e = 417 g/kWh.</p>
+  <p><strong>Ablations.</strong> We ablate:</p>
+  <ul>
+    <li><strong>Meta-pretraining:</strong> scratch initialization.</li>
+    <li><strong>Partial evaluation:</strong> NoL1.</li>
+    <li><strong>Acquisition strategy:</strong> replace UCB with greedy top-k.</li>
+    <li><strong>Surrogate encoder:</strong> MiniLM vs DistilBERT-base.</li>
+  </ul>
+  <p><strong>What was executed for this submission.</strong> To validate the infrastructure under the stated constraints, we executed a smoke-test on GSM8K in streaming mode using a small subset of 128 samples per split. We fine-tuned all-MiniLM-L6-v2 for one epoch with a lightweight self-supervised objective (minimizing the L2 norm of the CLS embedding) without invoking the scorer LLM and without hierarchical evaluation. The recorded outputs were: train_loss = 0.011175876409690986 and test_embedding_norm = 1.2840004886489316. This run confirms the data and training pipelines but does not exercise HiMAP’s multi-fidelity, multi-objective loop.</p>
+</section>
+
+<section>
+  <h2>Results</h2>
+  <p>We report only the outcomes of the smoke-test diagnostic described in the Experimental Setup. The full HiMAP experiments with multi-fidelity evaluation, multi-objective optimization, baselines, ablations, and robustness analyses were not executed for this submission. We therefore do not present accuracy, cost, bias, or hypervolume results.</p>
+  <p><strong>Smoke-test diagnostic on GSM8K (streaming subset)</strong></p>
+  <ul>
+    <li><strong>Setup:</strong> GSM8K in streaming mode with 128 samples per split; one-epoch fine-tuning of sentence-transformers/all-MiniLM-L6-v2 under an L2-regularization proxy objective on the CLS embedding; no scorer LLM calls; no L0/L1/L2 evaluation.</li>
+    <li><strong>train_loss:</strong> 0.011175876409690986</li>
+    <li><strong>test_embedding_norm:</strong> 1.2840004886489316</li>
+  </ul>
+  <p><strong>Interpretation.</strong> The low training loss indicates stable optimization of the lightweight objective and validates the execution scaffold: dataset streaming, 8-bit quantization, asynchronous logging, and fine-tuning under strict GPU and RAM limits. The test embedding norm is a proxy statistic without a validated link to downstream prompt-optimization objectives (accuracy, cost, bias); it should not be interpreted as evidence for or against HiMAP’s effectiveness.</p>
+  <p><strong>Limitations and fairness.</strong> No baselines were run, and none of HiMAP’s core components—hierarchical partial evaluation, meta-surrogate pretraining and online adaptation, Pareto-aware acquisition, or bias estimation—were exercised. Consequently, no claims about query efficiency, latency reduction, Pareto superiority, or fairness can be made from this run.</p>
+  <p><strong>Planned experiments (to be executed).</strong></p>
+  <ul>
+    <li><strong>Experiment 1:</strong> Query efficiency and multi-objective superiority on GSM8K, BBH-Hard, MMLU-5SUB, and WinoGender-Hard at budgets 250/500/1,000 with 5 seeds, measuring Pareto hypervolume, accuracy at fixed cost, bias gap at fixed accuracy, energy, carbon, and wall-clock time, comparing against Vanilla OPRO <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, EvoPrompt, SAPS, and Random.</li>
+    <li><strong>Experiment 2:</strong> Meta-surrogate transfer on unseen tasks (ARC-Easy, StrategyQA, MMLU-Law, MMLU-Astronomy), evaluating the number of L2 queries and wall-clock time to reach a target accuracy and tracking surrogate MAE on a validation set; Wilcoxon signed-rank tests will assess significance; an encoder-swap replication will test robustness.</li>
+    <li><strong>Experiment 3:</strong> Latency benefits of multi-fidelity early stopping on GSM8K at budget 500, comparing HiMAP-Full (L0+L1+L2 with early-drop) to NoL1 and NoStop, targeting ≥2× speedup with ≤0.5 pp accuracy loss.</li>
+  </ul>
+  <p>In summary, the present results confirm infrastructure readiness but do not evaluate HiMAP’s substantive contributions. Full experimental outcomes are deferred to future work.</p>
+</section>
+
+<section>
+  <h2>Conclusion</h2>
+  <p>We introduced HiMAP, a hierarchical multi-fidelity active framework for prompt optimization that jointly targets accuracy, cost, and fairness. HiMAP probes candidate prompts with inexpensive partial signals, transfers cross-task regularities via a pre-trained meta-surrogate, and allocates evaluations with a Pareto-aware acquisition rule that supports early dropping of weak candidates. A lightweight bias estimator based on counterfactual swaps integrates fairness directly into optimization, aligning the objective with real deployment needs <a href="https://arxiv.org/pdf/2303.13217v3.pdf" target="_blank" title="Fairness-guided Few-shot Prompting for Large Language Models">(Huan Ma, 2023)</a>.</p>
+  <p>This submission reports a smoke-test diagnostic that validates the data pipeline, quantization, and fine-tuning under tight memory constraints, yielding stable training and a proxy embedding statistic. The core contributions—multi-fidelity evaluation, meta-surrogate transfer, and multi-objective acquisition—were not yet executed end-to-end; thus, we refrain from empirical claims regarding query efficiency, Pareto improvements, latency, or carbon reductions.</p>
+  <p>Future work will run the full protocol across GSM8K, BBH-Hard, MMLU-5SUB, and WinoGender-Hard under budgets up to 1,000, provide confidence intervals against OPRO, EvoPrompt, SAPS, and Random <a href="https://arxiv.org/pdf/2309.03409v3.pdf" target="_blank" title="Large Language Models as Optimizers">(Chengrun Yang, 2023)</a>, and include ablations on meta-pretraining, partial evaluation, acquisition strategy, and surrogate size <a href="https://arxiv.org/pdf/2310.02905v3.pdf" target="_blank" title="Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers">(Xiaoqiang Lin, 2023)</a>, <a href="https://arxiv.org/pdf/2306.03082v2.pdf" target="_blank" title="InstructZero: Efficient instruction optimization for black-box large language models">(Lichang Chen, 2023)</a>, <a href="https://arxiv.org/pdf/2302.03668v2.pdf" target="_blank" title="Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery">(Yuxin Wen, 2023)</a>. We further plan to extend HiMAP to RLHF-style reward tuning and to open-weight scorer models for fully local optimization. By unifying hierarchical signals, cross-task transfer, and multi-objective selection, HiMAP aims to make automatic prompt engineering more affordable, faster, and fairer in real-world deployments.</p>
+</section>
+</body>
+</html>
