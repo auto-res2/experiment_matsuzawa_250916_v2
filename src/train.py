@@ -23,8 +23,8 @@ from transformers import (
     AutoModel,
     AutoTokenizer,
     get_linear_schedule_with_warmup,
-    AdamW,
 )
+from torch.optim import AdamW
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def train(config: Dict[str, Any], dataset):
 
     logger.info("Loading %s …", model_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name, device_map="auto")
+    model = AutoModel.from_pretrained(model_name)
     _freeze_except_head(model, n_unfrozen=unfreeze_last_n)
     model.to(device)
 
@@ -71,15 +71,17 @@ def train(config: Dict[str, Any], dataset):
         texts = [x["question"] for x in batch]
         return tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
 
-    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, collate_fn=collate)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=False, collate_fn=collate)
 
     optimiser = AdamW((p for p in model.parameters() if p.requires_grad), lr=lr)
+    estimated_steps = 100 * num_epochs  # Reasonable estimate for smoke test
     scheduler = get_linear_schedule_with_warmup(
-        optimiser, num_warmup_steps=5, num_training_steps=len(loader) * num_epochs
+        optimiser, num_warmup_steps=5, num_training_steps=estimated_steps
     )
 
     model.train()
     total_loss = 0.0
+    num_batches = 0
     for _ in range(num_epochs):
         for batch in loader:
             batch = {k: v.to(device) for k, v in batch.items()}
@@ -91,7 +93,8 @@ def train(config: Dict[str, Any], dataset):
             scheduler.step()
             optimiser.zero_grad(set_to_none=True)
             total_loss += loss.item()
-    avg_loss = total_loss / (len(loader) * num_epochs)
+            num_batches += 1
+    avg_loss = total_loss / num_batches if num_batches > 0 else 0.0
     return model, {"train_loss": avg_loss}
 
 
@@ -101,4 +104,4 @@ def save_model(model: torch.nn.Module, out_dir: str):
 
 
 def load_model(model_dir: str):
-    return AutoModel.from_pretrained(model_dir, device_map="auto")
+    return AutoModel.from_pretrained(model_dir)

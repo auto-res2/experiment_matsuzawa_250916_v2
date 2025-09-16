@@ -3,7 +3,7 @@ Evaluation & visualisation utilities.
 
 We keep evaluation extremely small: compute cosine-similarity between question
 embeddings and report their average magnitude as a *proxy* metric.  All results
-are printed to STDOUT and also written as JSON into .research/iteration1/…
+are printed to STDOUT and also written as JSON into .research/iteration2/…
 """
 from __future__ import annotations
 
@@ -41,7 +41,7 @@ def evaluate(model, dataset, split: str, config: Dict[str, Any]):
 
 
 def save_results(metrics: Dict[str, Any], tag: str):
-    out_dir = Path(".research/iteration1")
+    out_dir = Path(".research/iteration2")
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{tag}.json"
     with path.open("w") as fp:
