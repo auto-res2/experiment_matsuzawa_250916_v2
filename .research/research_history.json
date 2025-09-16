@@ -6,5 +6,82 @@
     "LLM prompt tuning",
     "self refining prompts",
     "dynamic prompt selection"
+  ],
+  "research_study_list": [
+    {
+      "title": "Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery"
+    },
+    {
+      "title": "Localized Zeroth-Order Prompt Optimization"
+    },
+    {
+      "title": "Large Language Models as Optimizers"
+    },
+    {
+      "title": "Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers"
+    },
+    {
+      "title": "On Discrete Prompt Optimization for Diffusion Models"
+    },
+    {
+      "title": "Connecting Large Language Models with Evolutionary Algorithms Yields Powerful Prompt Optimizers"
+    },
+    {
+      "title": "PromptAgent: Strategic Planning with Language Models Enables Expert-level Prompt Optimization"
+    },
+    {
+      "title": "ALGO: Synthesizing Algorithmic Programs with Generated Oracle Verifiers"
+    },
+    {
+      "title": "Large Language Models as Optimizers"
+    },
+    {
+      "title": "Algorithm of Thoughts: Enhancing Exploration of Ideas in Large Language Models"
+    },
+    {
+      "title": "Evoke: Evoking Critical Thinking Abilities in LLMs via Reviewer-Author Prompt Editing"
+    },
+    {
+      "title": "Localized Zeroth-Order Prompt Optimization"
+    },
+    {
+      "title": "Black-Box Tuning for Language-Model-as-a-Service"
+    },
+    {
+      "title": "Black-Box Tuning for Language-Model-as-a-Service"
+    },
+    {
+      "title": "Two-stage LLM Fine-tuning with Less Specialization and More Generalization"
+    },
+    {
+      "title": "Self-Refine: Iterative Refinement with Self-Feedback"
+    },
+    {
+      "title": "Evoke: Evoking Critical Thinking Abilities in LLMs via Reviewer-Author Prompt Editing"
+    },
+    {
+      "title": "PromptCoT: Align Prompt Distribution via Adapted Chain-of-Thought"
+    },
+    {
+      "title": "Dynamic Prompt Optimizing for Text-to-Image Generation"
+    },
+    {
+      "title": "Optimizing Prompts for Text-to-Image Generation"
+    },
+    {
+      "title": "Fairness-guided Few-shot Prompting for Large Language Models"
+    },
+    {
+      "title": "Efficient Prompt Optimization Through the Lens of Best Arm Identification"
+    },
+    {
+      "title": "Can discrete information extraction prompts generalize across language models?"
+    },
+    {
+      "title": "Evoke: Evoking Critical Thinking Abilities in LLMs via Reviewer-Author Prompt Editing"
+    },
+    {
+      "title": "One Prompt is not Enough: Automated Construction of a Mixture-of-Expert Prompts"
+    }
   ]
 }
