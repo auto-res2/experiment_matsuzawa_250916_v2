@@ -5,3 +5,604 @@
   publisher = {GitHub},
   url       = {https://github.com/airas-org/airas}
 }
+
+% ===========================================
+% REQUIRED CITATIONS
+% These papers must be cited in the manuscript
+% ===========================================
+
+@article{arora-2022-ask,
+ abstract = {Large language models (LLMs) transfer well to new tasks out-of-the-box simply
+given a natural language prompt that demonstrates how to perform the task and
+no additional training. Prompting is a brittle process wherein small
+modifications to the prompt can cause large variations in the model
+predictions, and therefore significant effort is dedicated towards designing a
+painstakingly "perfect prompt" for a task. To mitigate the high degree of
+effort involved in prompt-design, we instead ask whether producing multiple
+effective, yet imperfect, prompts and aggregating them can lead to a high
+quality prompting strategy. Our observations motivate our proposed prompting
+method, ASK ME ANYTHING (AMA). We first develop an understanding of the
+effective prompt formats, finding that question-answering (QA) prompts, which
+encourage open-ended generation ("Who went to the park?") tend to outperform
+those that restrict the model outputs ("John went to the park. Output True or
+False."). Our approach recursively uses the LLM itself to transform task inputs
+to the effective QA format. We apply the collected prompts to obtain several
+noisy votes for the input's true label. We find that the prompts can have very
+different accuracies and complex dependencies and thus propose to use weak
+supervision, a procedure for combining the noisy predictions, to produce the
+final predictions for the inputs. We evaluate AMA across open-source model
+families (e.g., EleutherAI, BLOOM, OPT, and T0) and model sizes (125M-175B
+parameters), demonstrating an average performance lift of 10.2% over the
+few-shot baseline. This simple strategy enables the open-source GPT-J-6B model
+to match and exceed the performance of few-shot GPT3-175B on 15 of 20 popular
+benchmarks. Averaged across these tasks, the GPT-J-6B model outperforms
+few-shot GPT3-175B. We release our code here:
+https://github.com/HazyResearch/ama_prompting},
+ arxiv_url = {https://arxiv.org/pdf/2210.02441v3.pdf},
+ author = {Simran Arora and Avanika Narayan and Mayee F. Chen and Laurel Orr and Neel Guha and Kush Bhatia and Ines Chami and Frederic Sala and Christopher Ré},
+ github_url = {https://github.com/HazyResearch/ama_prompting},
+ title = {Ask Me Anything: A simple strategy for prompting language models},
+ year = {2022}
+}
+
+@article{benara-2024-crafting,
+ abstract = {Large language models (LLMs) have rapidly improved text embeddings for a
+growing array of natural-language processing tasks. However, their opaqueness
+and proliferation into scientific domains such as neuroscience have created a
+growing need for interpretability. Here, we ask whether we can obtain
+interpretable embeddings through LLM prompting. We introduce question-answering
+embeddings (QA-Emb), embeddings where each feature represents an answer to a
+yes/no question asked to an LLM. Training QA-Emb reduces to selecting a set of
+underlying questions rather than learning model weights.
+  We use QA-Emb to flexibly generate interpretable models for predicting fMRI
+voxel responses to language stimuli. QA-Emb significantly outperforms an
+established interpretable baseline, and does so while requiring very few
+questions. This paves the way towards building flexible feature spaces that can
+concretize and evaluate our understanding of semantic brain representations. We
+additionally find that QA-Emb can be effectively approximated with an efficient
+model, and we explore broader applications in simple NLP tasks.},
+ arxiv_url = {https://arxiv.org/pdf/2405.16714v1.pdf},
+ author = {Vinamra Benara and Chandan Singh and John X. Morris and Richard Antonello and Ion Stoica and Alexander G. Huth and Jianfeng Gao},
+ title = {Crafting Interpretable Embeddings for Language Neuroscience by Asking LLMs Questions},
+ year = {2024}
+}
+
+@article{guha-2023-embroid,
+ abstract = {Recent work has shown that language models' (LMs) prompt-based learning
+capabilities make them well suited for automating data labeling in domains
+where manual annotation is expensive. The challenge is that while writing an
+initial prompt is cheap, improving a prompt is costly -- practitioners often
+require significant labeled data in order to evaluate the impact of prompt
+modifications. Our work asks whether it is possible to improve prompt-based
+learning without additional labeled data. We approach this problem by
+attempting to modify the predictions of a prompt, rather than the prompt
+itself. Our intuition is that accurate predictions should also be consistent:
+samples which are similar under some feature representation should receive the
+same prompt prediction. We propose Embroid, a method which computes multiple
+representations of a dataset under different embedding functions, and uses the
+consistency between the LM predictions for neighboring samples to identify
+mispredictions. Embroid then uses these neighborhoods to create additional
+predictions for each sample, and combines these predictions with a simple
+latent variable graphical model in order to generate a final corrected
+prediction. In addition to providing a theoretical analysis of Embroid, we
+conduct a rigorous empirical evaluation across six different LMs and up to 95
+different tasks. We find that (1) Embroid substantially improves performance
+over original prompts (e.g., by an average of 7.3 points on GPT-JT), (2) also
+realizes improvements for more sophisticated prompting strategies (e.g.,
+chain-of-thought), and (3) can be specialized to domains like law through the
+embedding functions.},
+ arxiv_url = {https://arxiv.org/pdf/2307.11031v1.pdf},
+ author = {Neel Guha and Mayee F. Chen and Kush Bhatia and Azalia Mirhoseini and Frederic Sala and Christopher Ré},
+ github_url = {https://github.com/HazyResearch/manifest},
+ title = {Embroid: Unsupervised Prediction Smoothing Can Improve Few-Shot Classification},
+ year = {2023}
+}
+
+@article{hao-2022-optimizing,
+ abstract = {Well-designed prompts can guide text-to-image models to generate amazing
+images. However, the performant prompts are often model-specific and misaligned
+with user input. Instead of laborious human engineering, we propose prompt
+adaptation, a general framework that automatically adapts original user input
+to model-preferred prompts. Specifically, we first perform supervised
+fine-tuning with a pretrained language model on a small collection of manually
+engineered prompts. Then we use reinforcement learning to explore better
+prompts. We define a reward function that encourages the policy to generate
+more aesthetically pleasing images while preserving the original user
+intentions. Experimental results on Stable Diffusion show that our method
+outperforms manual prompt engineering in terms of both automatic metrics and
+human preference ratings. Moreover, reinforcement learning further boosts
+performance, especially on out-of-domain prompts. The pretrained checkpoints
+are available at https://aka.ms/promptist. The demo can be found at
+https://aka.ms/promptist-demo.},
+ arxiv_url = {https://arxiv.org/pdf/2212.09611v2.pdf},
+ author = {Yaru Hao and Zewen Chi and Li Dong and Furu Wei},
+ github_url = {https://github.com/christophschuhmann/improved-aesthetic-predictor},
+ title = {Optimizing Prompts for Text-to-Image Generation},
+ year = {2022}
+}
+
+@article{hu-2024-localized,
+ abstract = {The efficacy of large language models (LLMs) in understanding and generating
+natural language has aroused a wide interest in developing prompt-based methods
+to harness the power of black-box LLMs. Existing methodologies usually
+prioritize a global optimization for finding the global optimum, which however
+will perform poorly in certain tasks. This thus motivates us to re-think the
+necessity of finding a global optimum in prompt optimization. To answer this,
+we conduct a thorough empirical study on prompt optimization and draw two major
+insights. Contrasting with the rarity of global optimum, local optima are
+usually prevalent and well-performed, which can be more worthwhile for
+efficient prompt optimization (Insight I). The choice of the input domain,
+covering both the generation and the representation of prompts, affects the
+identification of well-performing local optima (Insight II). Inspired by these
+insights, we propose a novel algorithm, namely localized zeroth-order prompt
+optimization (ZOPO), which incorporates a Neural Tangent Kernel-based derived
+Gaussian process into standard zeroth-order optimization for an efficient
+search of well-performing local optima in prompt optimization. Remarkably, ZOPO
+outperforms existing baselines in terms of both the optimization performance
+and the query efficiency, which we demonstrate through extensive experiments.},
+ arxiv_url = {https://arxiv.org/pdf/2403.02993v1.pdf},
+ author = {Wenyang Hu and Yao Shu and Zongmin Yu and Zhaoxuan Wu and Xiangqiang Lin and Zhongxiang Dai and See-Kiong Ng and Bryan Kian Hsiang Low},
+ title = {Localized Zeroth-Order Prompt Optimization},
+ year = {2024}
+}
+
+@article{lang-2022-training,
+ abstract = {We demonstrate that co-training (Blum & Mitchell, 1998) can improve the
+performance of prompt-based learning by using unlabeled data. While prompting
+has emerged as a promising paradigm for few-shot and zero-shot learning, it is
+often brittle and requires much larger models compared to the standard
+supervised setup. We find that co-training makes it possible to improve the
+original prompt model and at the same time learn a smaller, downstream
+task-specific model. In the case where we only have partial access to a prompt
+model (e.g., output probabilities from GPT-3 (Brown et al., 2020)) we learn a
+calibration model over the prompt outputs. When we have full access to the
+prompt model's gradients but full finetuning remains prohibitively expensive
+(e.g., T0 (Sanh et al., 2021)), we learn a set of soft prompt continuous
+vectors to iteratively update the prompt model. We find that models trained in
+this manner can significantly improve performance on challenging datasets where
+there is currently a large gap between prompt-based learning and
+fully-supervised models.},
+ arxiv_url = {https://arxiv.org/pdf/2202.00828v1.pdf},
+ author = {Hunter Lang and Monica Agrawal and Yoon Kim and David Sontag},
+ title = {Co-training Improves Prompt-based Learning for Large Language Models},
+ year = {2022}
+}
+
+@article{li-2021-the,
+ abstract = {Recent works have demonstrated great success in pre-training large-scale
+autoregressive language models on massive GPUs. To reduce the wall-clock
+training time, a common practice is to increase the batch size and learning
+rate. However, such practice is often brittle and leads to a so-called
+stability-efficiency dilemma: increasing the batch sizes and learning rates
+leads to better training efficiency but can also result in training
+instability, leading to poor generalization accuracy or failed runs. To better
+understand this phenomenon, we conduct an in-depth analysis on large-scale
+pre-training experiments replicating the GPT-2 model. We find that there is a
+strong correlation between training instability and extreme values of gradient
+variance, and that samples with long sequence lengths contribute to these
+extreme gradient variance values, especially at the beginning of the training,
+indicating that long sequence length can be a main source of training
+instability. Based on the analysis, we present a Sequence Length Warmup method
+that aims to solve the training stability-efficiency dilemma. Experiments
+replicating GPT-2 models show that our approach enables stable training with 8x
+larger batch size and 4x larger learning rate, whereas the baseline approach
+struggles with training instability. To achieve the same or better zero-shot
+evaluation results, our method reduces the required number of training tokens
+and wall clock time by up to 2.2x and 3.7x, respectively. Experiments
+replicating GPT-3 model (125M) show that our approach enables stable training
+with 8x larger batch size and 40x larger learning rate, and retains 99% of the
+zero-shot accuracy on 11 tasks using 10x less data and 17x less time compared
+to the original GPT-3 training recipe, while the baseline diverges under the
+same settings and only retain 95% of accuracy under lower learning rate.},
+ arxiv_url = {https://arxiv.org/pdf/2108.06084v4.pdf},
+ author = {Conglong Li and Minjia Zhang and Yuxiong He},
+ github_url = {https://github.com/NVIDIA/Megatron-LM},
+ title = {The Stability-Efficiency Dilemma: Investigating Sequence Length Warmup for Training GPT Models},
+ year = {2021}
+}
+
+@article{li-2024-concentrate,
+ abstract = {Recent advances in prompt optimization have notably enhanced the performance
+of pre-trained language models (PLMs) on downstream tasks. However, the
+potential of optimized prompts on domain generalization has been
+under-explored. To explore the nature of prompt generalization on unknown
+domains, we conduct pilot experiments and find that (i) Prompts gaining more
+attention weight from PLMs' deep layers are more generalizable and (ii) Prompts
+with more stable attention distributions in PLMs' deep layers are more
+generalizable. Thus, we offer a fresh objective towards domain-generalizable
+prompts optimization named "Concentration", which represents the "lookback"
+attention from the current decoding token to the prompt tokens, to increase the
+attention strength on prompts and reduce the fluctuation of attention
+distribution. We adapt this new objective to popular soft prompt and hard
+prompt optimization methods, respectively. Extensive experiments demonstrate
+that our idea improves comparison prompt optimization methods by 1.42% for soft
+prompt generalization and 2.16% for hard prompt generalization in accuracy on
+the multi-source domain generalization setting, while maintaining satisfying
+in-domain performance. The promising results validate the effectiveness of our
+proposed prompt optimization objective and provide key insights into
+domain-generalizable prompts.},
+ arxiv_url = {https://arxiv.org/pdf/2406.10584v4.pdf},
+ author = {Chengzhengxu Li and Xiaoming Liu and Zhaohan Zhang and Yichen Wang and Chen Liu and Yu Lan and Chao Shen},
+ github_url = {https://github.com/czx-li/Concentrate-Attention},
+ title = {Concentrate Attention: Towards Domain-Generalizable Prompt Optimization for Language Models},
+ year = {2024}
+}
+
+@article{ma-2023-fairness,
+ abstract = {Large language models have demonstrated surprising ability to perform
+in-context learning, i.e., these models can be directly applied to solve
+numerous downstream tasks by conditioning on a prompt constructed by a few
+input-output examples. However, prior research has shown that in-context
+learning can suffer from high instability due to variations in training
+examples, example order, and prompt formats. Therefore, the construction of an
+appropriate prompt is essential for improving the performance of in-context
+learning. In this paper, we revisit this problem from the view of predictive
+bias. Specifically, we introduce a metric to evaluate the predictive bias of a
+fixed prompt against labels or a given attributes. Then we empirically show
+that prompts with higher bias always lead to unsatisfactory predictive quality.
+Based on this observation, we propose a novel search strategy based on the
+greedy search to identify the near-optimal prompt for improving the performance
+of in-context learning. We perform comprehensive experiments with
+state-of-the-art mainstream models such as GPT-3 on various downstream tasks.
+Our results indicate that our method can enhance the model's in-context
+learning performance in an effective and interpretable manner.},
+ arxiv_url = {https://arxiv.org/pdf/2303.13217v3.pdf},
+ author = {Huan Ma and Changqing Zhang and Yatao Bian and Lemao Liu and Zhirui Zhang and Peilin Zhao and Shu Zhang and Huazhu Fu and Qinghua Hu and Bingzhe Wu},
+ title = {Fairness-guided Few-shot Prompting for Large Language Models},
+ year = {2023}
+}
+
+@article{petrov-2023-when,
+ abstract = {Context-based fine-tuning methods, including prompting, in-context learning,
+soft prompting (also known as prompt tuning), and prefix-tuning, have gained
+popularity due to their ability to often match the performance of full
+fine-tuning with a fraction of the parameters. Despite their empirical
+successes, there is little theoretical understanding of how these techniques
+influence the internal computation of the model and their expressiveness
+limitations. We show that despite the continuous embedding space being more
+expressive than the discrete token space, soft-prompting and prefix-tuning are
+potentially less expressive than full fine-tuning, even with the same number of
+learnable parameters. Concretely, context-based fine-tuning cannot change the
+relative attention pattern over the content and can only bias the outputs of an
+attention layer in a fixed direction. This suggests that while techniques like
+prompting, in-context learning, soft prompting, and prefix-tuning can
+effectively elicit skills present in the pretrained model, they may not be able
+to learn novel tasks that require new attention patterns.},
+ arxiv_url = {https://arxiv.org/pdf/2310.19698v2.pdf},
+ author = {Aleksandar Petrov and Philip H. S. Torr and Adel Bibi},
+ title = {When Do Prompting and Prefix-Tuning Work? A Theory of Capabilities and Limitations},
+ year = {2023}
+}
+
+@article{petrov-2024-prompting,
+ abstract = {Despite the widespread adoption of prompting, prompt tuning and prefix-tuning
+of transformer models, our theoretical understanding of these fine-tuning
+methods remains limited. A key question is whether one can arbitrarily modify
+the behavior of pretrained model by prompting or prefix-tuning it. Formally,
+whether prompting and prefix-tuning a pretrained model can universally
+approximate sequence-to-sequence functions. This paper answers in the
+affirmative and demonstrates that much smaller pretrained models than
+previously thought can be universal approximators when prefixed. In fact, the
+attention mechanism is uniquely suited for universal approximation with
+prefix-tuning a single attention head being sufficient to approximate any
+continuous function. Moreover, any sequence-to-sequence function can be
+approximated by prefixing a transformer with depth linear in the sequence
+length. Beyond these density-type results, we also offer Jackson-type bounds on
+the length of the prefix needed to approximate a function to a desired
+precision.},
+ arxiv_url = {https://arxiv.org/pdf/2402.14753v1.pdf},
+ author = {Aleksandar Petrov and Philip H. S. Torr and Adel Bibi},
+ title = {Prompting a Pretrained Transformer Can Be a Universal Approximator},
+ year = {2024}
+}
+
+@article{phang-2022-hypertuning,
+ abstract = {Fine-tuning large language models for different tasks can be costly and
+inefficient, and even methods that reduce the number of tuned parameters still
+require full gradient-based optimization. We propose HyperTuning, a novel
+approach to model adaptation that uses a hypermodel to generate task-specific
+parameters for a fixed downstream model. We demonstrate a simple setup for
+hypertuning with HyperT5, a T5-based hypermodel that produces soft prefixes or
+LoRA parameters for a frozen T5 model from few-shot examples. We train HyperT5
+in two stages: first, hyperpretraining with a modified conditional language
+modeling objective that trains a hypermodel to generate parameters; second,
+multi-task fine-tuning (MTF) on a large number of diverse language tasks. We
+evaluate HyperT5 on P3, MetaICL and Super-NaturalInstructions datasets, and
+show that it can effectively generate parameters for unseen tasks. Moreover, we
+show that using hypermodel-generated parameters as initializations for further
+parameter-efficient fine-tuning improves performance. HyperTuning can thus be a
+flexible and efficient way to leverage large language models for diverse
+downstream applications.},
+ arxiv_url = {https://arxiv.org/pdf/2211.12485v1.pdf},
+ author = {Jason Phang and Yi Mao and Pengcheng He and Weizhu Chen},
+ title = {HyperTuning:  Toward Adapting Large Language Models without Back-propagation},
+ year = {2022}
+}
+
+@article{saito-2022-prefix,
+ abstract = {Image-classification datasets have been used to pretrain image recognition
+models. Recently, web-scale image-caption datasets have emerged as a source of
+powerful pretraining alternative. Image-caption datasets are more
+``open-domain'', containing a wider variety of scene types and vocabulary words
+than traditional classification datasets, and models trained on these datasets
+have demonstrated strong performance on few- and zero-shot recognition tasks.
+When naively unifying image-classification and -caption dataset, we show that
+such dataset biases negatively affect pre-training by reducing the
+generalizability of learned representations and thus jeopardizing zero-shot
+performance since the unification can tailor the model for the classification
+dataset, making it vulnerable to the distribution shift from the dataset. In
+this work, we address the problem by disentangling the dataset bias using
+prefix tokens that inform a language encoder of the type of the input dataset
+(e.g., image-classification or caption) at training time. This approach allows
+the language encoder to share the knowledge from two datasets as well as switch
+the mode of feature extraction, i.e., image-classification dataset or
+image-caption dataset tailored mode, where we use image-caption mode in the
+zero-shot evaluation. Our method is generic and can be easily integrated into
+existing VL pre-training objectives such as CLIP or UniCL. In experiments, we
+show that this simple technique improves the performance in zero-shot image
+recognition accuracy and robustness to the image-level distribution shift.},
+ arxiv_url = {https://arxiv.org/pdf/2206.01125v2.pdf},
+ author = {Kuniaki Saito and Kihyuk Sohn and Xiang Zhang and Chun-Liang Li and Chen-Yu Lee and Kate Saenko and Tomas Pfister},
+ title = {Prefix Conditioning Unifies Language and Label Supervision},
+ year = {2022}
+}
+
+@article{sun-2022-black,
+ abstract = {Extremely large pre-trained language models (PTMs) such as GPT-3 are usually
+released as a service. It allows users to design task-specific prompts to query
+the PTMs through some black-box APIs. In such a scenario, which we call
+Language-Model-as-a-Service (LMaaS), the gradients of PTMs are usually
+unavailable. Can we optimize the task prompts by only accessing the model
+inference APIs? This paper proposes the black-box tuning framework to optimize
+the continuous prompt prepended to the input text via derivative-free
+optimization. Instead of optimizing in the original high-dimensional prompt
+space, which is intractable for traditional derivative-free optimization, we
+perform optimization in a randomly generated subspace due to the low intrinsic
+dimensionality of large PTMs. The experimental results show that the black-box
+tuning with RoBERTa on a few labeled samples not only significantly outperforms
+manual prompt and GPT-3's in-context learning, but also surpasses the
+gradient-based counterparts, i.e., prompt tuning and full model tuning.},
+ arxiv_url = {https://arxiv.org/pdf/2201.03514v4.pdf},
+ author = {Tianxiang Sun and Yunfan Shao and Hong Qian and Xuanjing Huang and Xipeng Qiu},
+ title = {Black-Box Tuning for Language-Model-as-a-Service},
+ year = {2022}
+}
+
+@article{wang-2024-discrete,
+ abstract = {This paper introduces the first gradient-based framework for prompt
+optimization in text-to-image diffusion models. We formulate prompt engineering
+as a discrete optimization problem over the language space. Two major
+challenges arise in efficiently finding a solution to this problem: (1)
+Enormous Domain Space: Setting the domain to the entire language space poses
+significant difficulty to the optimization process. (2) Text Gradient:
+Efficiently computing the text gradient is challenging, as it requires
+backpropagating through the inference steps of the diffusion model and a
+non-differentiable embedding lookup table. Beyond the problem formulation, our
+main technical contributions lie in solving the above challenges. First, we
+design a family of dynamically generated compact subspaces comprised of only
+the most relevant words to user input, substantially restricting the domain
+space. Second, we introduce "Shortcut Text Gradient" -- an effective
+replacement for the text gradient that can be obtained with constant memory and
+runtime. Empirical evaluation on prompts collected from diverse sources
+(DiffusionDB, ChatGPT, COCO) suggests that our method can discover prompts that
+substantially improve (prompt enhancement) or destroy (adversarial attack) the
+faithfulness of images generated by the text-to-image diffusion model.},
+ arxiv_url = {https://arxiv.org/pdf/2407.01606v1.pdf},
+ author = {Ruochen Wang and Ting Liu and Cho-Jui Hsieh and Boqing Gong},
+ github_url = {https://github.com/ruocwang/dpo-diffusion},
+ journal = {Proceedings of the 41st International Conference on Machine
+  Learning (ICML 2024)},
+ title = {On Discrete Prompt Optimization for Diffusion Models},
+ year = {2024}
+}
+
+@article{wen-2023-hard,
+ abstract = {The strength of modern generative models lies in their ability to be
+controlled through text-based prompts. Typical "hard" prompts are made from
+interpretable words and tokens, and must be hand-crafted by humans. There are
+also "soft" prompts, which consist of continuous feature vectors. These can be
+discovered using powerful optimization methods, but they cannot be easily
+interpreted, re-used across models, or plugged into a text-based interface.
+  We describe an approach to robustly optimize hard text prompts through
+efficient gradient-based optimization. Our approach automatically generates
+hard text-based prompts for both text-to-image and text-to-text applications.
+In the text-to-image setting, the method creates hard prompts for diffusion
+models, allowing API users to easily generate, discover, and mix and match
+image concepts without prior knowledge on how to prompt the model. In the
+text-to-text setting, we show that hard prompts can be automatically discovered
+that are effective in tuning LMs for classification.},
+ arxiv_url = {https://arxiv.org/pdf/2302.03668v2.pdf},
+ author = {Yuxin Wen and Neel Jain and John Kirchenbauer and Micah Goldblum and Jonas Geiping and Tom Goldstein},
+ title = {Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery},
+ year = {2023}
+}
+
+@article{wu-2023-zero,
+ abstract = {Prompt tuning in natural language processing (NLP) has become an increasingly
+popular method for adapting large language models to specific tasks. However,
+the transferability of these prompts, especially continuous prompts, between
+different models remains a challenge. In this work, we propose a zero-shot
+continuous prompt transfer method, where source prompts are encoded into
+relative space and the corresponding target prompts are searched for
+transferring to target models. Experimental results confirm the effectiveness
+of our method, showing that 'task semantics' in continuous prompts can be
+generalized across various language models. Moreover, we find that combining
+'task semantics' from multiple source models can further enhance the
+generalizability of transfer.},
+ arxiv_url = {https://arxiv.org/pdf/2310.01691v2.pdf},
+ author = {Zijun Wu and Yongkang Wu and Lili Mou},
+ github_url = {https://github.com/MANGA-UOFA/PTfer},
+ title = {Zero-Shot Continuous Prompt Transfer: Generalizing Task Semantics Across Language Models},
+ year = {2023}
+}
+
+@article{yang-2023-large,
+ abstract = {Optimization is ubiquitous. While derivative-based algorithms have been
+powerful tools for various problems, the absence of gradient imposes challenges
+on many real-world applications. In this work, we propose Optimization by
+PROmpting (OPRO), a simple and effective approach to leverage large language
+models (LLMs) as optimizers, where the optimization task is described in
+natural language. In each optimization step, the LLM generates new solutions
+from the prompt that contains previously generated solutions with their values,
+then the new solutions are evaluated and added to the prompt for the next
+optimization step. We first showcase OPRO on linear regression and traveling
+salesman problems, then move on to our main application in prompt optimization,
+where the goal is to find instructions that maximize the task accuracy. With a
+variety of LLMs, we demonstrate that the best prompts optimized by OPRO
+outperform human-designed prompts by up to 8% on GSM8K, and by up to 50% on
+Big-Bench Hard tasks. Code at https://github.com/google-deepmind/opro.},
+ arxiv_url = {https://arxiv.org/pdf/2309.03409v3.pdf},
+ author = {Chengrun Yang and Xuezhi Wang and Yifeng Lu and Hanxiao Liu and Quoc V. Le and Denny Zhou and Xinyun Chen},
+ github_url = {https://github.com/google-deepmind/opro},
+ title = {Large Language Models as Optimizers},
+ year = {2023}
+}
+
+% ===========================================
+% REFERENCE CANDIDATES
+% Additional reference papers for context
+% ===========================================
+
+@article{chen-2023-instructzero,
+ abstract = {Large language models~(LLMs) are instruction followers, but it can be
+challenging to find the best instruction for different situations, especially
+for black-box LLMs on which backpropagation is forbidden. Instead of directly
+optimizing the discrete instruction, we optimize a low-dimensional soft prompt
+applied to an open-source LLM to generate the instruction for the black-box
+LLM. On each iteration of the proposed method, which we call InstructZero, a
+soft prompt is converted into an instruction using the open-source LLM, which
+is then submitted to the black-box LLM for zero-shot evaluation, and the
+performance is sent to Bayesian optimization to produce new soft prompts
+improving the zero-shot performance. We evaluate InstructZero on different
+combinations of open-source LLMs and APIs including Vicuna and ChatGPT. Our
+results show that InstructZero outperforms SOTA auto-instruction methods across
+a variety of downstream tasks. Our code and data are publicly available at
+https://github.com/Lichang-Chen/InstructZero.},
+ arxiv_url = {https://arxiv.org/pdf/2306.03082v2.pdf},
+ author = {Lichang Chen and Jiuhai Chen and Tom Goldstein and Heng Huang and Tianyi Zhou},
+ title = {InstructZero: Efficient instruction optimization for black-box large language models},
+ year = {2023}
+}
+
+@article{diao-2022-black,
+ abstract = {The increasing scale of general-purpose Pre-trained Language Models (PLMs)
+necessitates the study of more efficient adaptation across different downstream
+tasks. In this paper, we establish a Black-box Discrete Prompt Learning (BDPL)
+to resonate with pragmatic interactions between the cloud infrastructure and
+edge devices. Particularly, instead of fine-tuning the model in the cloud, we
+adapt PLMs by prompt learning, which efficiently optimizes only a few
+parameters of the discrete prompts. Moreover, we consider the scenario that we
+do not have access to the parameters and gradients of the pre-trained models,
+except for its outputs given inputs. This black-box setting secures the cloud
+infrastructure from potential attack and misuse to cause a single-point
+failure, which is preferable to the white-box counterpart by current
+infrastructures. Under this black-box constraint, we apply a variance-reduced
+policy gradient algorithm to estimate the gradients of parameters in the
+categorical distribution of each discrete prompt. In light of our method, the
+user devices can efficiently tune their tasks by querying the PLMs bounded by a
+range of API calls. Our experiments on RoBERTa and GPT-3 demonstrate that the
+proposed algorithm achieves significant improvement on eight benchmarks in a
+cloud-device collaboration manner. Finally, we conduct in-depth case studies to
+comprehensively analyze our method in terms of various data sizes, prompt
+lengths, training budgets, optimization objectives, prompt transferability, and
+explanations of the learned prompts. Our code will be available at
+https://github.com/shizhediao/Black-Box-Prompt-Learning.},
+ arxiv_url = {https://arxiv.org/pdf/2201.08531v3.pdf},
+ author = {Shizhe Diao and Zhichao Huang and Ruijia Xu and Xuechun Li and Yong Lin and Xiao Zhou and Tong Zhang},
+ title = {Black-box prompt learning for pre-trained language models},
+ year = {2022}
+}
+
+@article{jacot-2018-neural,
+ abstract = {At initialization, artificial neural networks (ANNs) are equivalent to
+Gaussian processes in the infinite-width limit, thus connecting them to kernel
+methods. We prove that the evolution of an ANN during training can also be
+described by a kernel: during gradient descent on the parameters of an ANN, the
+network function $f_\theta$ (which maps input vectors to output vectors)
+follows the kernel gradient of the functional cost (which is convex, in
+contrast to the parameter cost) w.r.t. a new kernel: the Neural Tangent Kernel
+(NTK). This kernel is central to describe the generalization features of ANNs.
+While the NTK is random at initialization and varies during training, in the
+infinite-width limit it converges to an explicit limiting kernel and it stays
+constant during training. This makes it possible to study the training of ANNs
+in function space instead of parameter space. Convergence of the training can
+then be related to the positive-definiteness of the limiting NTK. We prove the
+positive-definiteness of the limiting NTK when the data is supported on the
+sphere and the non-linearity is non-polynomial. We then focus on the setting of
+least-squares regression and show that in the infinite-width limit, the network
+function $f_\theta$ follows a linear differential equation during training. The
+convergence is fastest along the largest kernel principal components of the
+input data with respect to the NTK, hence suggesting a theoretical motivation
+for early stopping. Finally we study the NTK numerically, observe its behavior
+for wide networks, and compare it to the infinite-width limit.},
+ arxiv_url = {https://arxiv.org/pdf/1806.07572v4.pdf},
+ author = {Arthur Jacot and Franck Gabriel and Clément Hongler},
+ journal = {In Advances in neural information processing systems (pp.
+  8571-8580) 2018},
+ title = {Neural Tangent Kernel: Convergence and generalization in neural networks},
+ year = {2018}
+}
+
+@article{kojima-2022-large,
+ abstract = {Pretrained large language models (LLMs) are widely used in many sub-fields of
+natural language processing (NLP) and generally known as excellent few-shot
+learners with task-specific exemplars. Notably, chain of thought (CoT)
+prompting, a recent technique for eliciting complex multi-step reasoning
+through step-by-step answer examples, achieved the state-of-the-art
+performances in arithmetics and symbolic reasoning, difficult system-2 tasks
+that do not follow the standard scaling laws for LLMs. While these successes
+are often attributed to LLMs' ability for few-shot learning, we show that LLMs
+are decent zero-shot reasoners by simply adding "Let's think step by step"
+before each answer. Experimental results demonstrate that our Zero-shot-CoT,
+using the same single prompt template, significantly outperforms zero-shot LLM
+performances on diverse benchmark reasoning tasks including arithmetics
+(MultiArith, GSM8K, AQUA-RAT, SVAMP), symbolic reasoning (Last Letter, Coin
+Flip), and other logical reasoning tasks (Date Understanding, Tracking Shuffled
+Objects), without any hand-crafted few-shot examples, e.g. increasing the
+accuracy on MultiArith from 17.7% to 78.7% and GSM8K from 10.4% to 40.7% with
+large InstructGPT model (text-davinci-002), as well as similar magnitudes of
+improvements with another off-the-shelf large model, 540B parameter PaLM. The
+versatility of this single prompt across very diverse reasoning tasks hints at
+untapped and understudied fundamental zero-shot capabilities of LLMs,
+suggesting high-level, multi-task broad cognitive capabilities may be extracted
+by simple prompting. We hope our work not only serves as the minimal strongest
+zero-shot baseline for the challenging reasoning benchmarks, but also
+highlights the importance of carefully exploring and analyzing the enormous
+zero-shot knowledge hidden inside LLMs before crafting finetuning datasets or
+few-shot exemplars.},
+ arxiv_url = {https://arxiv.org/pdf/2205.11916v4.pdf},
+ author = {Takeshi Kojima and Shixiang Shane Gu and Machel Reid and Yutaka Matsuo and Yusuke Iwasawa},
+ title = {Large language models are zero-shot reasoners},
+ year = {2022}
+}
+
+@article{lin-2023-use,
+ abstract = {Large language models (LLMs) have shown remarkable instruction-following
+capabilities and achieved impressive performances in various applications.
+However, the performances of LLMs depend heavily on the instructions given to
+them, which are typically manually tuned with substantial human efforts. Recent
+work has used the query-efficient Bayesian optimization (BO) algorithm to
+automatically optimize the instructions given to black-box LLMs. However, BO
+usually falls short when optimizing highly sophisticated (e.g.,
+high-dimensional) objective functions, such as the functions mapping an
+instruction to the performance of an LLM. This is mainly due to the limited
+expressive power of the Gaussian process (GP) which is used by BO as a
+surrogate to model the objective function. Meanwhile, it has been repeatedly
+shown that neural networks (NNs), especially pre-trained transformers, possess
+strong expressive power and can model highly complex functions. So, we adopt a
+neural bandit algorithm which replaces the GP in BO by an NN surrogate to
+optimize instructions for black-box LLMs. More importantly, the neural bandit
+algorithm allows us to naturally couple the NN surrogate with the hidden
+representation learned by a pre-trained transformer (i.e., an open-source LLM),
+which significantly boosts its performance. These motivate us to propose our
+INSTruction optimization usIng Neural bandits Coupled with Transformers
+(INSTINCT) algorithm. We perform instruction optimization for ChatGPT and use
+extensive experiments to show that INSTINCT consistently outperforms baselines
+in different tasks, e.g., various instruction induction tasks and the task of
+improving zero-shot chain-of-thought instructions. Our code is available at
+https://github.com/xqlin98/INSTINCT.},
+ arxiv_url = {https://arxiv.org/pdf/2310.02905v3.pdf},
+ author = {Xiaoqiang Lin and Zhaoxuan Wu and Zhongxiang Dai and Wenyang Hu and Yao Shu and See-Kiong Ng and Patrick Jaillet and Bryan Kian Hsiang Low},
+ title = {Use Your INSTINCT: INSTruction optimization usIng Neural bandits Coupled with Transformers},
+ year = {2023}
+}
