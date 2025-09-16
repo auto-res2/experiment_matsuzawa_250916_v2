@@ -6,5 +6,82 @@
     "learned prompt embeddings",
     "prompt engineering methods",
     "prefix tuning"
+  ],
+  "research_study_list": [
+    {
+      "title": "Large Language Models as Optimizers"
+    },
+    {
+      "title": "Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery"
+    },
+    {
+      "title": "Localized Zeroth-Order Prompt Optimization"
+    },
+    {
+      "title": "On Discrete Prompt Optimization for Diffusion Models"
+    },
+    {
+      "title": "Concentrate Attention: Towards Domain-Generalizable Prompt Optimization for Language Models"
+    },
+    {
+      "title": "Black-Box Tuning for Language-Model-as-a-Service"
+    },
+    {
+      "title": "Black-Box Tuning for Language-Model-as-a-Service"
+    },
+    {
+      "title": "Zero-Shot Continuous Prompt Transfer: Generalizing Task Semantics Across Language Models"
+    },
+    {
+      "title": "Optimizing Prompts for Text-to-Image Generation"
+    },
+    {
+      "title": "Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery"
+    },
+    {
+      "title": "Embroid: Unsupervised Prediction Smoothing Can Improve Few-Shot Classification"
+    },
+    {
+      "title": "Crafting Interpretable Embeddings for Language Neuroscience by Asking LLMs Questions"
+    },
+    {
+      "title": "When Do Prompting and Prefix-Tuning Work? A Theory of Capabilities and Limitations"
+    },
+    {
+      "title": "Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery"
+    },
+    {
+      "title": "Co-training Improves Prompt-based Learning for Large Language Models"
+    },
+    {
+      "title": "Hard Prompts Made Easy: Gradient-Based Discrete Optimization for Prompt Tuning and Discovery"
+    },
+    {
+      "title": "Fairness-guided Few-shot Prompting for Large Language Models"
+    },
+    {
+      "title": "Ask Me Anything: A simple strategy for prompting language models"
+    },
+    {
+      "title": "Ask Me Anything: A simple strategy for prompting language models"
+    },
+    {
+      "title": "On Discrete Prompt Optimization for Diffusion Models"
+    },
+    {
+      "title": "Prompting a Pretrained Transformer Can Be a Universal Approximator"
+    },
+    {
+      "title": "HyperTuning:  Toward Adapting Large Language Models without Back-propagation"
+    },
+    {
+      "title": "Prefix Conditioning Unifies Language and Label Supervision"
+    },
+    {
+      "title": "The Stability-Efficiency Dilemma: Investigating Sequence Length Warmup for Training GPT Models"
+    },
+    {
+      "title": "The Stability-Efficiency Dilemma: Investigating Sequence Length Warmup for Training GPT Models"
+    }
   ]
 }
