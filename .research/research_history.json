@@ -569,7 +569,66 @@
         "OGBN-Arxiv",
         "Pubmed",
         "Synthetic power-law graphs (degree 25–200)"
-      ]
+      ],
+      "external_resources": {
+        "hugging_face": {
+          "models": [],
+          "datasets": [
+            {
+              "id": "SauravMaheshkar/pareto-ogbn-arxiv",
+              "author": "SauravMaheshkar",
+              "sha": "0f3cb5bcb1c080f022f10940a9b134a11e6e0f2f",
+              "created_at": "2024-02-14T17:54:01+00:00",
+              "last_modified": "2024-02-14T17:57:14+00:00",
+              "private": false,
+              "gated": false,
+              "disabled": false,
+              "downloads": 39,
+              "likes": 0,
+              "siblings": [
+                {
+                  "rfilename": ".gitattributes"
+                },
+                {
+                  "rfilename": "README.md"
+                },
+                {
+                  "rfilename": "link_gen.py"
+                },
+                {
+                  "rfilename": "links/arxiv_tvtEdges.pkl"
+                },
+                {
+                  "rfilename": "pretrain_labels/metis_label_arxiv.pt"
+                }
+              ],
+              "card_data": {
+                "license": "cc",
+                "language": [],
+                "tags": [],
+                "datasets": [],
+                "task_categories": [
+                  "graph-ml"
+                ],
+                "size_categories": [
+                  "1K<n<10K"
+                ],
+                "metrics": [],
+                "widget": []
+              },
+              "tags": [
+                "task_categories:graph-ml",
+                "license:cc",
+                "size_categories:1K<n<10K",
+                "arxiv:2210.02016",
+                "region:us"
+              ],
+              "readme": "---\nsize_categories:\n- 1K<n<10K\ntask_categories:\n- graph-ml\nlicense: cc\n---\n\n## Dataset Information\n\n| # Nodes | # Edges | # Features |\n|:-------:|:---------:|:----------:|\n| 169,343 | 1,166,243 |     128    |\n\nPre-processed as per the official codebase of https://arxiv.org/abs/2210.02016\n\n## Citations\n\n```\n@article{ju2023multi,\n  title={Multi-task Self-supervised Graph Neural Networks Enable Stronger Task Generalization},\n  author={Ju, Mingxuan and Zhao, Tong and Wen, Qianlong and Yu, Wenhao and Shah, Neil and Ye, Yanfang and Zhang, Chuxu},\n  booktitle={International Conference on Learning Representations},\n  year={2023}\n}\n```",
+              "extracted_code": ""
+            }
+          ]
+        }
+      }
     }
   },
   "idea_info_history": [
